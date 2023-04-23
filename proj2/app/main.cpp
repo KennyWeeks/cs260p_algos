@@ -13,7 +13,7 @@ int main()
 		{"-1", "-2", "-3", "1", "2"},
 		{"5", "10", "-1", "1", "2"},
 		{"10", "5", "50", "-1", "-300"}*/
-    line.push_back("-1");
+    /*line.push_back("-1");
     line.push_back("-1");
     line.push_back("-1");
     line.push_back("-1");
@@ -45,11 +45,11 @@ int main()
     line.push_back("5");
     line.push_back("50");
     line.push_back("-1");
-    line.push_back("-1");
+    line.push_back("-300");
     grid.push_back(line);
     line.clear();
-    solve(grid);
-    /*line.push_back("2");
+    solve(grid);*/
+    line.push_back("2");
     line.push_back("-1");
     line.push_back("-13");
     grid.push_back(line);
@@ -61,9 +61,9 @@ int main()
     line.clear();
     line.push_back("15");
     line.push_back("-13");
-    line.push_back("1");
+    line.push_back("-1");
     grid.push_back(line);
-    solve(grid);*/
+    solve(grid);
     /*grid.push_back({"-2", "-30", "20"});
     grid.push_back({"15", "-13", "-1"});*/
     return 0;
