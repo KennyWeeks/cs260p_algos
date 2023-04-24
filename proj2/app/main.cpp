@@ -13,7 +13,7 @@ int main()
 		{"-1", "-2", "-3", "1", "2"},
 		{"5", "10", "-1", "1", "2"},
 		{"10", "5", "50", "-1", "-300"}*/
-    /*line.push_back("-1");
+    line.push_back("-1");
     line.push_back("-1");
     line.push_back("-1");
     line.push_back("-1");
@@ -48,8 +48,8 @@ int main()
     line.push_back("-300");
     grid.push_back(line);
     line.clear();
-    solve(grid);*/
-    line.push_back("2");
+    solve(grid);
+    /*line.push_back("2");
     line.push_back("-1");
     line.push_back("-13");
     grid.push_back(line);
@@ -63,7 +63,7 @@ int main()
     line.push_back("-13");
     line.push_back("-1");
     grid.push_back(line);
-    solve(grid);
+    solve(grid);*/
     /*
     {"5", "-6", "7", "-8", "9"},
 	{"-6", "7", "-8", "9", "-10"},
@@ -109,7 +109,34 @@ int main()
    solve(grid);*/
     /*grid.push_back({"-2", "-30", "20"});
     grid.push_back({"15", "-13", "-1"});*/
-
+    /*{"3", "P", "D", "10"},
+			{"-5", "-6", "-2", "-100"},
+			{"1", "-4", "-5", "-24"},
+			{"-3", "4", "6", "8"}*/
+    /*line.push_back("3");
+    line.push_back("P");
+    line.push_back("D");
+    line.push_back("10");
+    grid.push_back(line);
+    line.clear();
+    line.push_back("-5");
+    line.push_back("-6");
+    line.push_back("-2");
+    line.push_back("-100");
+    grid.push_back(line);
+    line.clear();
+    line.push_back("1");
+    line.push_back("-4");
+    line.push_back("-5");
+    line.push_back("-24");
+    grid.push_back(line);
+    line.clear();
+    line.push_back("-3");
+    line.push_back("4");
+    line.push_back("6");
+    line.push_back("8");
+    grid.push_back(line);
+    solve(grid);*/
     return 0;
 }
 
