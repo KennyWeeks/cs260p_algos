@@ -49,7 +49,7 @@ int main()
     grid.push_back(line);
     line.clear();
     solve(grid);*/
-    line.push_back("2");
+    /*line.push_back("2");
     line.push_back("-1");
     line.push_back("-13");
     grid.push_back(line);
@@ -63,9 +63,53 @@ int main()
     line.push_back("-13");
     line.push_back("-1");
     grid.push_back(line);
-    solve(grid);
+    solve(grid);*/
+    /*
+    {"5", "-6", "7", "-8", "9"},
+	{"-6", "7", "-8", "9", "-10"},
+	{"7", "-8", "9", "-10", "11"},
+	{"-8", "9", "-10", "11", "-12"},
+	{"9", "-10", "11", "-12", "13"}
+    */
+   line.push_back("5");
+   line.push_back("-6");
+   line.push_back("7");
+   line.push_back("-8");
+   line.push_back("9");
+   grid.push_back(line);
+   line.clear();
+   line.push_back("-6");
+   line.push_back("7");
+   line.push_back("-8");
+   line.push_back("9");
+   line.push_back("-10");
+   grid.push_back(line);
+   line.clear();
+   line.push_back("7");
+   line.push_back("-8");
+   line.push_back("9");
+   line.push_back("-10");
+   line.push_back("11");
+   grid.push_back(line);
+   line.clear();
+   line.push_back("-8");
+   line.push_back("9");
+   line.push_back("-10");
+   line.push_back("11");
+   line.push_back("-12");
+   grid.push_back(line);
+   line.clear();
+   line.push_back("9");
+   line.push_back("-10");
+   line.push_back("11");
+   line.push_back("-12");
+   line.push_back("13");
+   grid.push_back(line);
+   line.clear();
+   solve(grid);
     /*grid.push_back({"-2", "-30", "20"});
     grid.push_back({"15", "-13", "-1"});*/
+
     return 0;
 }
 

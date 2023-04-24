@@ -5,78 +5,49 @@
 #include <queue>
 #include "gridynp.hpp"
 
+void new_queue(std::queue<std::pair<int, int> >& new_queue, std::queue<std::pair<int, int> >& old_queue, std::vector<std::vector<int> >& calc, std::vector<std::vector<std::string> >& grid, std::vector<int>& path) {
+	while(old_queue.size() != 0) {
+		std::pair<int, int> point = old_queue.front();
+		int curr_point = calc[point.first][point.second];
+		int op = std::stoi(grid[point.first][point.second]);
+		op *= -1;
+		if(point.first - 1 >= 0) {
+			int prev_value = curr_point + op;
+			if(prev_value == calc[point.first - 1][point.second]) {
+				path.push_back(prev_value);
+				std::pair<int, int> new_point;
+				new_point.first = point.first - 1;
+				new_point.second = point.second;
+				new_queue.push(new_point);
+			}
+		}
+		if(point.second - 1 >= 0) {
+			int prev_value = curr_point + op;
+			if(prev_value == calc[point.first][point.second - 1]) {
+				path.push_back(prev_value);
+				std::pair<int, int> new_point;
+				new_point.first = point.first;
+				new_point.second = point.second -  1;
+				new_queue.push(new_point);
+			}
+		}
+		old_queue.pop();
+	}
+}
+
 int path(std::vector<std::vector<std::string> >& grid, std::vector<std::vector<int> >& calc, std::vector<int>& path_one, std::vector<int>& path_two, std::queue<std::pair<int, int> >& q_one, std::queue<std::pair<int, int> >& q_two) {
 	int size = grid.size();
-	for(int i = 0; i < size; i++) {
-		for(int j = 0; j < size; j++) {
-			std::cout << grid[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
 	//This is to start it;
 	path_one.push_back(calc[size-2][size-1]);
 	path_two.push_back(calc[size-1][size-2]);
 	int total = (2 * size) - 2;
-	while(total != 0) {
-		std::queue<std::pair<int, int> > new_path_one;
-		while(q_one.size() != 0) {
-			std::cout << "Is this even running" << std::endl;
-			std::pair<int, int> point = q_one.front();
-			int curr_point = calc[point.first][point.second];
-			int op = std::stoi(grid[point.first][point.second]);
-			op *= -1;
-			if(point.first - 1 >= 0) {
-				int next_value = curr_point + op;
-				if(next_value == calc[point.first - 1][point.second]) {
-					path_one.push_back(next_value);
-					std::pair<int, int> new_point;
-					new_point.first = point.first - 1;
-					new_point.second = point.second;
-					new_path_one.push(new_point);
-				}
-			}
-			if(point.second - 1 >= 0) {
-				int next_value = curr_point + op;
-				if(next_value == calc[point.first][point.second-1]) {
-					path_one.push_back(next_value);
-					std::pair<int, int> new_point;
-					new_point.first = point.first;
-					new_point.second = point.second-1;
-					new_path_one.push(new_point);
-				}
-			}
-			q_one.pop();
-		}
-		q_one = new_path_one;
-		std::queue<std::pair<int, int> > new_path_two;
-		while(q_two.size() != 0) {
-			std::pair<int, int> point = q_two.front();
-			int curr_point = calc[point.first][point.second];
-			int op = std::stoi(grid[point.first][point.second]);
-			op *= -1;
-			if(point.first - 1 >= 0) {
-				int next_value = curr_point + op;
-				if(next_value == calc[point.first - 1][point.second]) {
-					path_two.push_back(next_value);
-					std::pair<int, int> new_point;
-					new_point.first = point.first - 1;
-					new_point.second = point.second;
-					new_path_two.push(new_point);
-				}
-			}
-			if(point.second - 1 >= 0) {
-				int next_value = curr_point + op;
-				if(next_value == calc[point.first][point.second-1]) {
-					path_two.push_back(next_value);
-					std::pair<int, int> new_point;
-					new_point.first = point.first;
-					new_point.second = point.second-1;
-					new_path_two.push(new_point);
-				}
-			}
-			q_two.pop();
-		}
-		q_two = new_path_two;
+	while(total) {
+		std::queue<std::pair<int, int> > new_queue_one;
+		new_queue(new_queue_one, q_one, calc, grid, path_one);
+		q_one = new_queue_one;
+		std::queue<std::pair<int, int> > new_queue_two;
+		new_queue(new_queue_two, q_two, calc, grid, path_two);
+		q_two = new_queue_two;
 		total--;
 	}
 	return 0;
@@ -88,6 +59,29 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 	short size = grid.size();
 	std::vector<std::vector<int> > calc (size, std::vector<int> (size));
 
+	//I'm gonna define some stuff here
+
+	//Tracking D
+	//So in this vector will be be instances where d is
+	std::vector<std::vector<std::string> > d_instance(size, std::vector<std::string> (size));
+
+	//This vector will actually keep track of the numerical values on any unused D path.
+	std::vector<std::vector<int> > d_track (size, std::vector<int> (size));
+
+	//Tracking P
+	//So in this vector will be instances were p is
+	std::vector<std::vector<std::string> > p_instance(size, std::vector<std::string> (size));
+
+	//This vector will actually keep track of the numerical values on any unused P path.
+	std::vector<std::vector<int> > p_track (size, std::vector<int> (size));
+
+	for(int i =0; i < size; i++) {
+		for(int j = 0; j < size; j++) {
+			std::cout << grid[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
 	//Initialize the calculation graph
 	int start = 1;
 	for(int i = 0; i < size; i++) {
@@ -96,8 +90,16 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 	}
 	start = 1;
 	for(int i = 0; i < size; i++) {
+		std::cout << std::stoi(grid[i][0]) << std::endl;
 		calc[i][0] = start + std::stoi(grid[i][0]);
 		start += std::stoi(grid[i][0]);
+	}
+
+	for(int i =0; i < size; i++) {
+		for(int j = 0; j < size; j++) {
+			std::cout << calc[i][j] << " ";
+		}
+		std::cout << std::endl;
 	}
 
 	//Define path lists
@@ -151,6 +153,14 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 		}
 	}
 
+	for(int i =0; i < size; i++) {
+		for(int j = 0; j < size; j++) {
+			std::cout << calc[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << "-----------" << std::endl;
 	path(grid, calc, path_one, path_two, top_path, left_path);
 	int min_one = path_one[0];
 	int min_two = path_two[0];
