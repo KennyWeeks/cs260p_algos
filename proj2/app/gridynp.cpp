@@ -123,31 +123,70 @@ std::vector<std::vector<std::string> >& main_p, std::vector<std::vector<std::str
 	//This will empty whatever path queue is currently be looking it
 	//It will generate the next points in the queue
 	//And it will add to the path
+
 	while(old_queue.size() != 0) {
+		std::pair<int, int> point = old_queue.front(); //Get the node at the top of the queue
+		int number_val = calc[point.first][point.second]; //This is the second number value;
+		int operand = 0;
+		if(point.first - 1 >= 0) {
+			//This will essentially just check the row association
+			int op = 0;
+			bool non_number = false;
+			if(grid[point.first - 1][point.second] != "D" and grid[point.first - 1][point.second] != "P") {
+				//This is essentially just looking at the node and seeing if its a number or not;
+				op = std::stoi(grid[point.first - 1][point.second]) * (-1);
+				non_number = true;
+			}
+
+			//I want to check if the operator is equal to what is on the grid afterwards
+			int attempt_val = number_val + op;
+			if(attempt_val == calc[point.first-1][point.second]) {
+				//This means we have a match, we don't need to look forward for anything
+			}
+		}
+		if(point.second - 1 >= 0) {
+			int op = 0;
+			if(grid[point.first][point.second-1] != "D" and grid[point.first][point.second-1] != "P") {
+				//This is essentially just looking at the node and seeing if its a number or not;
+				op = std::stoi(grid[point.first][point.second-1]) * (-1);
+			}
+		}
+		old_queue.pop();
+	}
+
+	/*while(old_queue.size() != 0) {
 		std::pair<int, int> point = old_queue.front();
 		int curr_point = calc[point.first][point.second];
-		int op = std::stoi(grid[point.first][point.second]);
+		std::cout << point.first << " " << point.second << std::endl;
+		std::cout << "THis is also a grid value " << grid[point.first][point.second] << std::endl;
+		int op = 0;
+		if(grid[point.first][point.second] != "D" and grid[point.first][point.second] != "P") {
+			op = std::stoi(grid[point.first][point.second]);
+		}
 		op *= -1;
+		std::cout << "Is this happending" << std::endl;
+		
 		if(point.first - 1 >= 0) {
-			std::cout << op << " ";
+			std::cout << "This is happening first" << std::endl;
+			std::cout << "THis is also a grid value " << grid[point.first][point.second] << std::endl;
 			int prev_value = curr_point;
-			if(std::stoi(grid[point.first][point.second]) > 0 and main_d[point.first - 1][point.second] == "D") {
-				std::cout << " this is doubled " << " ";
+			if(main_d[point.first - 1][point.second] == "D") {
 				op *= 2;
 				prev_value += op;
 			} else if(std::stoi(grid[point.first][point.second]) > 0) {
-				std::cout << " not doubled ";
+				std::cout << "Why is this running" << std::endl;
 				prev_value += op;
 			}
 
-			if(std::stoi(grid[point.first][point.second]) < 0 and main_d[point.first - 1][point.second] != "P") {
+			std::cout << point.first << " " << point.second << std::endl;
+			if(std::stoi(grid[point.first][point.second]) < 0 and main_p[point.first - 1][point.second] != "P") {
 				prev_value += op;
 			}
 
-			std::cout << " " << prev_value << std::endl;
-
+			std::cout << "This is from the top " << prev_value << std::endl;
 			
 			if(prev_value == calc[point.first - 1][point.second]) {
+				std::cout << "This has to be a match " << std::endl;
 				path.insert(prev_value);
 				std::pair<int, int> new_point;
 				new_point.first = point.first - 1;
@@ -155,21 +194,38 @@ std::vector<std::vector<std::string> >& main_p, std::vector<std::vector<std::str
 				new_queue.push(new_point);
 			}
 		}
-		op = std::stoi(grid[point.first][point.second]);
+		op = 0;
+		if(grid[point.first][point.second] != "D" and grid[point.first][point.second] != "P") {
+			op = std::stoi(grid[point.first][point.second]);
+		}
 		op *= -1;
+		op *= -1;
+		std::cout << "------" << std::endl;
 		if(point.second - 1 >= 0) {
 			int prev_value = curr_point;
+			std::cout << "This is the previous operation " << prev_value << std::endl;
+			std::cout << "This is the grid value " << grid[point.first][point.second] << std::endl;
 			if(std::stoi(grid[point.first][point.second]) > 0 and main_d[point.first][point.second-1] == "D") {
+				std::cout << "Why is this running" << std::endl;
 				op *= 2;
 				prev_value += op;
-			} else {
+			} else if(std::stoi(grid[point.first][point.second]) > 0) {
+				prev_value += op;
+			}
+			std::cout << grid[point.first][point.second] << std::endl;
+			std::cout << point.first << " " << point.second << std::endl;
+			std::cout << "This is the current point " << prev_value << std::endl;
+			std::cout << "This is a test " << grid[point.first][point.second] << std::endl;
+			std::cout << "This is the previous operation " << prev_value << std::endl;
+
+			if(std::stoi(grid[point.first][point.second]) < 0 and main_p[point.first][point.second-1] != "P") {
 				prev_value += op;
 			}
 
-			if(std::stoi(grid[point.first][point.second]) < 0 and main_d[point.first][point.second-1] != "P") {
-				prev_value += op;
-			}
+			std::cout << "This is also a test " << prev_value << std::endl;
+
 			if(prev_value == calc[point.first][point.second - 1]) {
+				std::cout << "Is this a match" << std::endl;
 				path.insert(prev_value);
 				std::pair<int, int> new_point;
 				new_point.first = point.first;
@@ -177,8 +233,9 @@ std::vector<std::vector<std::string> >& main_p, std::vector<std::vector<std::str
 				new_queue.push(new_point);
 			}
 		}
+		std::cout << "------" << std::endl;
 		old_queue.pop();
-	}
+	}*/
 }
 
 int path(std::vector<std::vector<std::string> >& grid, std::vector<std::vector<int> >& calc, 
@@ -192,10 +249,10 @@ std::vector<std::vector<std::string> >& main_p) {
 	int total = (2 * size) - 2;
 	while(total) {
 		std::queue<std::pair<int, int> > new_queue_one;
-		new_queue(new_queue_one, q_one, calc, grid, path_one, main_d, main_p);
+		new_queue(new_queue_one, q_one, calc, grid, path_one, main_p, main_d);
 		q_one = new_queue_one;
 		std::queue<std::pair<int, int> > new_queue_two;
-		new_queue(new_queue_two, q_two, calc, grid, path_two, main_d, main_p);
+		new_queue(new_queue_two, q_two, calc, grid, path_two, main_p, main_d);
 		q_two = new_queue_two;
 		total--;
 	}
@@ -308,6 +365,8 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 				point = next_value;
 			} else if(grid_num > 0) {
 				//Then we need to account for D
+				//Perform the main calculation here
+				//-------
 				if(main_d_path[i-1][j] == "D") {
 					//Then we are looking at a node that needs to be doubled
 					top += (2 * grid_num);
@@ -320,33 +379,48 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 				} else {
 					left += grid_num;
 				}
-
 				//This is the point just doing the basic greedy path
+				//THis is basically just the best path from the start
 				point = std::max(top, left);
 
-				//Now we need to check the under graph;
-				bool under_has_changed = false;
+				//-------
+		
+				//Now we need to check the other graph for D
+				bool under_top_has_changed = false;
 				int under_top = 0;
 				if(d_instance[i-1][j] == "D") {
-					under_has_changed = true;
+					under_top_has_changed = true;
 					under_top = d_track[i-1][j] + (2 * grid_num);
 				}
 
+				bool under_left_has_changed = false;
 				int under_left = 0;
 				if(d_instance[i][j-1] == "D") {
-					under_has_changed = true;
+					under_left_has_changed = true;
 					under_left = d_track[i][j-1] + (2 * grid_num);
 				}
 
-				if(under_has_changed) {
-					int max_under = std::max(under_top, under_left);
+				if(d_instance[i][j-1] == "D" or d_instance[i-1][j] == "D") {
+					int max_under = 0;
+					//The reason I do this is because I don't want the D to be in the underlying graph to mistakenly replaced by a zero when it shouldn't be
+					if(under_top_has_changed ==  true and under_left_has_changed == false) {
+						max_under = under_top;
+					} 
+					if(under_left_has_changed == true and under_top_has_changed == false) {
+						max_under = under_left;
+					} 
+					if(under_left_has_changed == true and under_top_has_changed == true) {
+						max_under = std::max(under_top, under_left);
+					}
 
-					//So now we compare with the the max_under_for_d and the main_path d
-					//I should make this a conditinal
+					d_track[i][j] = max_under;
+
+					//Save a new maximum here
 					point = std::max(point, max_under);
 				}
 
 				//Now we need to apply the operations to the p path
+				bool under_top_p_has_changed = false;
 				int under_top_p = 0;
 				if(p_instance[i-1][j] == "P") {
 					if(d_instance[i-1][j] == "D" or main_d_path[i-1][j] == "D") {
@@ -355,9 +429,11 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 					} else {
 						under_top_p = p_track[i-1][j] + grid_num;
 					}
+					under_top_p_has_changed = true;
 					p_instance[i][j] = "P";
 				}
 
+				bool under_left_p_has_changed = false;
 				int under_left_p = 0;
 				if(p_instance[i][j-1] == "P") {
 					if(p_instance[i][j-1] == "D" or main_d_path[i][j-1] == "D") {
@@ -366,16 +442,29 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 					} else {
 						under_left_p = p_track[i][j-1] + grid_num;
 					}
-					
+					under_left_p_has_changed = true;
 					p_instance[i][j] = "P";
 				}
 
 				if(p_instance[i][j-1] == "P" or p_instance[i-1][j] == "P") {
-					p_track[i][j] = std::max(under_top_p, under_left_p);
+					if(under_top_p_has_changed == true and under_left_p_has_changed == false) {
+						p_track[i][j] = under_top_p;
+					} else if(under_left_p_has_changed == true and under_top_p_has_changed == false) {
+						p_track[i][j] = under_left_p;
+					} else if(under_left_p_has_changed == true and under_top_p_has_changed == true) {
+						p_track[i][j] = std::max(under_top_p, under_left_p);
+					}
+					
 				}
 
-				if(main_p_path[i-1][j] == "P" or main_p_path[i][j-1] == "P") {
-					//Somewhere along the previous path, there was a P value that wasn't used in the main path.
+
+				//This is see if the "P" power up needs to persist on the main path
+				//If this one isn't chosen, then something from the p_layer underneath was successful
+				if(point == top and main_p_path[i-1][j] == "P") {
+					main_p_path[i][j] = "P";
+				}
+
+				if(point == left and main_p_path[i][j-1] == "P") {
 					main_p_path[i][j] = "P";
 				}
 			} else {
@@ -392,21 +481,32 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 				point = std::max(top, left);
 
 				//Now we need to check the under graph;
-				bool under_has_changed = false;
+				bool under_top_has_changed = false;
 				int under_top = 0;
 				if(p_instance[i-1][j] == "P") {
-					under_has_changed = true;
+					under_top_has_changed = true;
 					under_top = p_track[i-1][j];
 				}
 
+				bool under_left_has_changed = false;
 				int under_left = 0;
 				if(p_instance[i][j-1] == "P") {
-					under_has_changed = true;
+					under_left_has_changed = true;
 					under_left = p_track[i][j-1];
 				}
 
-				if(under_has_changed) {
-					int max_under = std::max(under_top, under_left);
+				if(p_instance[i][j-1] == "P" or p_instance[i-1][j] == "P") {
+					int max_under = 0;
+					if(under_top_has_changed == true and under_left_has_changed == false) {
+						max_under = under_top;
+					} else if(under_top_has_changed == false and under_left_has_changed == true) {
+						max_under = under_left;
+					} else {
+						max_under = std::max(under_top, under_left);
+					}
+					//int max_under = std::max(under_top, under_left);
+
+					p_track[i][j] = max_under;
 
 					//So now we compare with the the max_under_for_d and the main_path d
 					//I should make this a conditinal
@@ -451,22 +551,32 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 					}
 				}
 
-				if(main_d_path[i-1][j] == "D" or main_d_path[i][j-1] == "D") {
-					//Somewhere along the previous path, there was a P value that wasn't used in the main path.
+				//This is see if the "D" power up needs to persist on the main path
+				if(point == top and main_d_path[i-1][j] == "D") {
 					main_d_path[i][j] = "D";
 				}
+
+				if(point == left and main_d_path[i][j-1] == "D") {
+					main_d_path[i][j] = "D";
+				}
+
+
 			}
 
 			//Save the point here
 			if(i == size - 1 and j == size - 1) {
+				//This is the last node
 				std::pair<int, int> point;
+				//Offset up one row
 				point.first = i - 1;
 				point.second = j;
-				path_one.insert(top);
+				path_one.insert(top); //Save the value of the ending for one path here
 				top_path.push(point);
+
+				//Offset down one row
 				point.first = i;
 				point.second = j - 1;
-				path_two.insert(left);
+				path_two.insert(left); //Save the value of hte ending for one path here
 				left_path.push(point);
 			} else {
 				calc[i][j] = point;
@@ -492,7 +602,7 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 	std::cout << std::endl;
 
 	int min_loss = std::max(min_one, min_two);
-	if(min_loss >= 0) {
+	if(min_loss > 0) {
 		std::cout << "Minimum hit points is 1" << std::endl;
 	} else {
 		std::cout << ((1 - (min_loss)) + 1) << std::endl;

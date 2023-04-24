@@ -8,4 +8,5 @@ void new_queue(std::queue<std::pair<int, int> >& new_queue, std::queue<std::pair
 void initialize_border();
 void display_graph(std::vector<std::vector<std::string> >& graph);
 void display_graph(std::vector<std::vector<int> >& graph);
+void tracking_changes();
 #endif
