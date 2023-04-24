@@ -3,9 +3,47 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <set>
 #include "gridynp.hpp"
 
-void new_queue(std::queue<std::pair<int, int> >& new_queue, std::queue<std::pair<int, int> >& old_queue, std::vector<std::vector<int> >& calc, std::vector<std::vector<std::string> >& grid, std::vector<int>& path) {
+void display_graph(std::vector<std::vector<std::string> >& graph) {
+	int size = graph.size();
+	for(int i = 0; i < size; i++) {
+		for(int j = 0; j < size; j++) {
+			std::cout << graph[i][j] << ", ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void display_graph(std::vector<std::vector<int> >& graph) {
+	int size = graph.size();
+	for(int i = 0; i < size; i++) {
+		for(int j = 0; j < size; j++) {
+			std::cout << graph[i][j] << ", ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void initialize_border(std::vector<std::vector<std::string> >& grid, std::vector<std::vector<int> >& calc)  {
+	int size = grid.size();
+	int start = 1;
+	for(int i = 0; i < size; i++) {
+		calc[0][i] = start + std::stoi(grid[0][i]);
+		start += std::stoi(grid[0][i]);
+	}
+	start = 1;
+	for(int i = 0; i < size; i++) {
+		calc[i][0] = start + std::stoi(grid[i][0]);
+		start += std::stoi(grid[i][0]);
+	}
+}
+
+void new_queue(std::queue<std::pair<int, int> >& new_queue, std::queue<std::pair<int, int> >& old_queue, std::vector<std::vector<int> >& calc, std::vector<std::vector<std::string> >& grid, std::set<int>& path) {
+	//This will empty whatever path queue is currently be looking it
+	//It will generate the next points in the queue
+	//And it will add to the path
 	while(old_queue.size() != 0) {
 		std::pair<int, int> point = old_queue.front();
 		int curr_point = calc[point.first][point.second];
@@ -14,7 +52,7 @@ void new_queue(std::queue<std::pair<int, int> >& new_queue, std::queue<std::pair
 		if(point.first - 1 >= 0) {
 			int prev_value = curr_point + op;
 			if(prev_value == calc[point.first - 1][point.second]) {
-				path.push_back(prev_value);
+				path.insert(prev_value);
 				std::pair<int, int> new_point;
 				new_point.first = point.first - 1;
 				new_point.second = point.second;
@@ -24,7 +62,7 @@ void new_queue(std::queue<std::pair<int, int> >& new_queue, std::queue<std::pair
 		if(point.second - 1 >= 0) {
 			int prev_value = curr_point + op;
 			if(prev_value == calc[point.first][point.second - 1]) {
-				path.push_back(prev_value);
+				path.insert(prev_value);
 				std::pair<int, int> new_point;
 				new_point.first = point.first;
 				new_point.second = point.second -  1;
@@ -35,11 +73,11 @@ void new_queue(std::queue<std::pair<int, int> >& new_queue, std::queue<std::pair
 	}
 }
 
-int path(std::vector<std::vector<std::string> >& grid, std::vector<std::vector<int> >& calc, std::vector<int>& path_one, std::vector<int>& path_two, std::queue<std::pair<int, int> >& q_one, std::queue<std::pair<int, int> >& q_two) {
+int path(std::vector<std::vector<std::string> >& grid, std::vector<std::vector<int> >& calc, std::set<int>& path_one, std::set<int>& path_two, std::queue<std::pair<int, int> >& q_one, std::queue<std::pair<int, int> >& q_two) {
 	int size = grid.size();
 	//This is to start it;
-	path_one.push_back(calc[size-2][size-1]);
-	path_two.push_back(calc[size-1][size-2]);
+	path_one.insert(calc[size-2][size-1]);
+	path_two.insert(calc[size-1][size-2]);
 	int total = (2 * size) - 2;
 	while(total) {
 		std::queue<std::pair<int, int> > new_queue_one;
@@ -59,7 +97,11 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 	short size = grid.size();
 	std::vector<std::vector<int> > calc (size, std::vector<int> (size));
 
-	//I'm gonna define some stuff here
+	initialize_border(grid, calc);
+
+	//Display the graph
+	display_graph(calc);
+	std::cout << "-----" << std::endl;
 
 	//Tracking D
 	//So in this vector will be be instances where d is
@@ -75,36 +117,11 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 	//This vector will actually keep track of the numerical values on any unused P path.
 	std::vector<std::vector<int> > p_track (size, std::vector<int> (size));
 
-	for(int i =0; i < size; i++) {
-		for(int j = 0; j < size; j++) {
-			std::cout << grid[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-
 	//Initialize the calculation graph
-	int start = 1;
-	for(int i = 0; i < size; i++) {
-		calc[0][i] = start + std::stoi(grid[0][i]);
-		start += std::stoi(grid[0][i]);
-	}
-	start = 1;
-	for(int i = 0; i < size; i++) {
-		std::cout << std::stoi(grid[i][0]) << std::endl;
-		calc[i][0] = start + std::stoi(grid[i][0]);
-		start += std::stoi(grid[i][0]);
-	}
-
-	for(int i =0; i < size; i++) {
-		for(int j = 0; j < size; j++) {
-			std::cout << calc[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
 
 	//Define path lists
-	std::vector<int> path_one;
-	std::vector<int> path_two;
+	std::set<int> path_one;
+	std::set<int> path_two;
 	std::queue<std::pair<int, int> > top_path;
 	std::queue<std::pair<int, int> > left_path;
 
@@ -129,23 +146,20 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 				//Then we need to account for D
 				point = std::max(top + grid_num, left + grid_num);
 			} else {
-				std::cout << "Is it here" << std::endl;
-				std::cout << top << std::endl;
-				std::cout << left << std::endl;
 				//Then we need to account for P
 				point = std::max(top + grid_num, left + grid_num);
-				std::cout << point << std::endl;
 			}
+
 			//Save the point here
 			if(i == size - 1 and j == size - 1) {
 				std::pair<int, int> point;
 				point.first = i - 1;
 				point.second = j;
-				path_one.push_back(top + grid_num);
+				path_one.insert(top + grid_num);
 				top_path.push(point);
 				point.first = i;
 				point.second = j - 1;
-				path_two.push_back(left + grid_num);
+				path_two.insert(left + grid_num);
 				left_path.push(point);
 			} else {
 				calc[i][j] = point;
@@ -153,17 +167,12 @@ unsigned solve(std::vector<std::vector<std::string> > grid) {
 		}
 	}
 
-	for(int i =0; i < size; i++) {
-		for(int j = 0; j < size; j++) {
-			std::cout << calc[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
+	display_graph(calc);
 
 	std::cout << "-----------" << std::endl;
 	path(grid, calc, path_one, path_two, top_path, left_path);
-	int min_one = path_one[0];
-	int min_two = path_two[0];
+	int min_one = 1000000000;
+	int min_two = 1000000000;
 	for(auto i: path_one) {
 		std::cout << i << " ";
 		min_one = std::min(min_one, i);
